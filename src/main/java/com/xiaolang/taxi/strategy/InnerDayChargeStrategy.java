@@ -5,6 +5,9 @@ import com.xiaolang.taxi.config.TaxiChargeType;
 import com.xiaolang.taxi.config.TaxiDistanceChargeFlag;
 import com.xiaolang.taxi.config.TaxiUnitPrice;
 
+import static com.xiaolang.taxi.config.TaxiDistanceChargeFlag.THREE;
+import static com.xiaolang.taxi.config.TaxiDistanceChargeFlag.TEN;
+
 public class InnerDayChargeStrategy implements ITaxiChargeStrategy {
 
     @Override
@@ -15,17 +18,17 @@ public class InnerDayChargeStrategy implements ITaxiChargeStrategy {
     @Override
     public double getThreeToTenKilometreTaxiFare(TaxiChargeType chargeType, double distance) {
         double price = 0;
-        if (distance > 3 && distance <= 10) {
-            price = (distance - TaxiDistanceChargeFlag.THREE.getMaxDistance()) * TaxiUnitPrice.INNER_DAY_BETWEEN_THREE_AND_TEN.getUnitPrice();
-        } else if (distance > 10) {
-            price = (TaxiDistanceChargeFlag.TEN.getMaxDistance() - TaxiDistanceChargeFlag.THREE.getMaxDistance()) * TaxiUnitPrice.INNER_DAY_BETWEEN_THREE_AND_TEN.getUnitPrice();
+        if (distance > THREE.getMaxDistance() && distance <= TEN.getMaxDistance()) {
+            price = (distance - THREE.getMaxDistance()) * TaxiUnitPrice.INNER_DAY_BETWEEN_THREE_AND_TEN.getUnitPrice();
+        } else if (distance > TEN.getMaxDistance()) {
+            price = (TaxiDistanceChargeFlag.TEN.getMaxDistance() - THREE.getMaxDistance()) * TaxiUnitPrice.INNER_DAY_BETWEEN_THREE_AND_TEN.getUnitPrice();
         }
         return price;
     }
 
     @Override
     public double getOverTenKilometreTaxiFare(TaxiChargeType chargeType, double distance) {
-        if (distance > 10) {
+        if (distance > TEN.getMaxDistance()) {
             return (distance - TaxiDistanceChargeFlag.TEN.getMaxDistance()) * TaxiUnitPrice.INNER_DAY_OVER_TEN.getUnitPrice();
         }
         return 0;
